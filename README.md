@@ -1,8 +1,10 @@
-# GITADORAPatternCrawler
+# GITADORA Pattern Crawler
 GITADORA Pattern Crawler for GITADORA Pattern Recommender
 
 ## 사용 기술
-- 아마도 Python
+- Python 3.10
+- [Beautiful Soup 4](https://beautiful-soup-4.readthedocs.io/en/latest/)
+- [requests](https://requests.readthedocs.io/en/latest/)
 
 ## Process
 1. 로그인 정보 획득
