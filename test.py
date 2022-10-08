@@ -1,6 +1,7 @@
 import unittest
 
 import requests
+import main
 from bs4 import BeautifulSoup
 
 
@@ -13,15 +14,6 @@ def read_session_id():
     session_id = f.read()
     f.close()
     return session_id
-
-
-def get_music_data(session_id, url):
-    home_url = 'https://p.eagate.573.jp/game/gfdm/gitadora_highvoltage/s/playdata/music.html'
-
-    requests.get(url=home_url, cookies={'M573SSID': session_id})
-    r = get_request(session_id, url)
-
-    return BeautifulSoup(r.text, 'html.parser')
 
 
 class TestStringMethods(unittest.TestCase):
@@ -58,15 +50,37 @@ class TestStringMethods(unittest.TestCase):
         [print(s.string) for s in diff]
         self.assertIn("1/n", title.strings)
 
-    def test_beautiful_soup_diff_parsing(self):
+    def test_not_exist_song(self):
+        session_id = read_session_id()
+        exist_url = 'https://p.eagate.573.jp/game/gfdm/gitadora_highvoltage/p/playdata/music_detail.html?' \
+              'gtype=gf&cat=&sid=2&index=3&page=1'
+        not_exist_url = "https://p.eagate.573.jp/game/gfdm/gitadora_highvoltage/p/playdata/music_detail.html?" \
+              "gtype=&sid=2&index=22&cat=&page=1"
+
+        error_msg_class = "common_tb_frame_black"
+
+        bs1 = main.get_music_data(session_id, exist_url)
+        bs2 = main.get_music_data(session_id, not_exist_url)
+
+        self.assertTrue(not bs1.find("div", class_=error_msg_class))
+        self.assertFalse(not bs2.find("div", class_=error_msg_class))
+
+    def test_song_crawl(self):
         session_id = read_session_id()
         url = 'https://p.eagate.573.jp/game/gfdm/gitadora_highvoltage/p/playdata/music_detail.html?' \
               'gtype=gf&cat=&sid=2&index=2&page=1'
 
-        bs = get_music_data(session_id, url)
-        diff = bs.select(".diff_BASIC > .diff_area")
-        levels = [level.string for level in diff]
-        self.assertCountEqual(levels, ["3.75", "4.10"])
+        data = main.get_music_data(session_id, url)
+        result = main.crawl_song_data(data)
+
+        self.assertEqual(result['title'], "1/n")
+        self.assertCountEqual(result["levels"]["BASIC"], ["3.75", "4.10"])
+        self.assertCountEqual(result["levels"]["ADVANCED"], ["5.70", "5.15"])
+        self.assertCountEqual(result["levels"]["EXTREME"], ["7.25", "5.85"])
+
+    def test_crawl_songs_for_one_char(self):
+        songs = main.crawl_songs_for_one_char(read_session_id(), 0)
+        self.assertEqual(len(songs), 22)
 
     def test_session_id_reader(self):
         f = open("test.txt", "r", encoding="utf-8")

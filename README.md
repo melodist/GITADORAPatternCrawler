@@ -19,3 +19,6 @@ GITADORA Pattern Crawler for GITADORA Pattern Recommender
 - 곡별 URL에 직접 접근 시 정상적인 접근이 불가능
   - 브라우저에서 [곡별 성적 홈](https://p.eagate.573.jp/game/gfdm/gitadora_highvoltage/s/playdata/music.html)에 한 번 접근한 이후 정상적으로 접근 가능
   - 곡별 성적 홈에 한 번 접근
+
+## 테스트 시 특이사항
+- 단위테스트에서 반복되는 코드 제거 방법
