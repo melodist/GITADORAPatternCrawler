@@ -1,3 +1,5 @@
+import csv
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -7,10 +9,8 @@ def get_request(session_id, url):
 
 
 def read_session_id():
-    f = open("session_id.txt", "r", encoding="utf-8")
-    session_id = f.read()
-    f.close()
-    return session_id
+    with open("session_id.txt", "r", encoding="utf-8") as f:
+        return f.read()
 
 
 def get_music_data(session_id, url):
@@ -53,6 +53,15 @@ def crawl_songs_for_one_char(session_id, char_index):
         i += 1
 
     return songs
+
+
+def songs_to_csv(filename, songs):
+    with open(filename, 'w', newline='') as csvfile:
+        fieldnames = ['title', 'diff', 'level']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        for song in songs:
+            [writer.writerow({'title': song['title'], 'diff': diff, 'level': level}) for (diff, level) in song['levels'].items()]
 
 
 def run():

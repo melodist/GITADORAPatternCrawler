@@ -82,11 +82,14 @@ class TestStringMethods(unittest.TestCase):
         songs = main.crawl_songs_for_one_char(read_session_id(), 0)
         self.assertEqual(len(songs), 22)
 
+    def test_songs_to_csv(self):
+        levels = {'BASIC': '8.75', 'ADVANCED': '9.20', 'EXTREME': '9.45', 'MASTER': '9.98'}
+        songs = [{'title': 'test', 'levels': levels}]
+        main.songs_to_csv('test.csv', songs)
+
     def test_session_id_reader(self):
-        f = open("test.txt", "r", encoding="utf-8")
-        result = f.read()
-        self.assertEqual(result, "test")
-        f.close()
+        with open("test.txt", "r", encoding="utf-8") as f:
+            self.assertEqual(f.read(), "test")
 
 
 if __name__ == '__main__':
