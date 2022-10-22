@@ -8,6 +8,11 @@ def get_request(session_id, url):
     return requests.get(url=url, cookies={'M573SSID': session_id})
 
 
+def post_category_request(session_id, char_index):
+    url = 'https://p.eagate.573.jp/game/gfdm/gitadora_highvoltage/s/playdata/music.html'
+    requests.post(url=url, cookies={'M573SSID': session_id}, data={'cat': char_index})
+
+
 def read_session_id():
     with open("session_id.txt", "r", encoding="utf-8") as f:
         return f.read()
@@ -36,6 +41,9 @@ def crawl_song_data(data):
 
 
 def crawl_songs_for_one_char(session_id, char_index):
+    print(f'Request for index {char_index}')
+    post_category_request(session_id, char_index)
+
     error_msg_class = "common_tb_frame_black"
 
     songs = []
@@ -55,6 +63,14 @@ def crawl_songs_for_one_char(session_id, char_index):
     return songs
 
 
+def crawl_songs_for_all_chars(session_id):
+    songs = []
+    for i in range(0, 37):
+        songs += crawl_songs_for_one_char(session_id, i)
+
+    return songs
+
+
 def songs_to_csv(filename, songs):
     with open(filename, 'w', newline='') as csvfile:
         fieldnames = ['title', 'diff', 'level']
@@ -66,6 +82,15 @@ def songs_to_csv(filename, songs):
 
 def run():
     print('GITADORA Pattern Crawler start')
+    session_id = read_session_id()
+
+    print('Get session id')
+    songs = crawl_songs_for_all_chars(session_id)
+
+    print('Print result to csv')
+    songs_to_csv('result.csv', songs)
+
+    print('GITADORA Pattern Crawler end')
 
 
 if __name__ == '__main__':
