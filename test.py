@@ -87,6 +87,11 @@ class TestStringMethods(unittest.TestCase):
         songs = [{'title': 'test', 'levels': levels}]
         main.songs_to_csv('test.csv', songs)
 
+    def test_songs_to_csv_with_unicode(selfs):
+        levels = {'BASIC': '8.75', 'ADVANCED': '9.20', 'EXTREME': '9.45', 'MASTER': '9.98'}
+        songs = [{'title': 'テスト', 'levels': levels}]
+        main.songs_to_csv('test.csv', songs)
+
     def test_session_id_reader(self):
         with open("test.txt", "r", encoding="utf-8") as f:
             self.assertEqual(f.read(), "test")

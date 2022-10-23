@@ -2,9 +2,11 @@ import csv
 
 import requests
 from bs4 import BeautifulSoup
+from time import sleep
 
 
 def get_request(session_id, url):
+    sleep(0.05)
     return requests.get(url=url, cookies={'M573SSID': session_id})
 
 
@@ -27,7 +29,31 @@ def get_music_data(session_id, url):
     return BeautifulSoup(r.text, 'html.parser')
 
 
-def crawl_song_data(data):
+def crawl_song_data(session_id, char_index, i):
+    url = 'https://p.eagate.573.jp/game/gfdm/gitadora_highvoltage/p/playdata/music_detail.html?' \
+          f'gtype=gf&cat={char_index}&sid=2&index={i}&page=1'
+
+    error_msg_class = "common_tb_frame_black"
+
+    print(url)
+    retry_cnt = 0
+
+    while retry_cnt < 5:
+        data = get_music_data(session_id, url)
+        if data.find("div", class_=error_msg_class):
+            return
+        elif not data.find('div', attrs={'class': 'live_title'}):
+            if retry_cnt < 5:
+                retry_cnt += 1
+                sleep(1)
+                print(f'Song Data Empty retry_cnt: {retry_cnt}')
+                continue
+            else:
+                print('Song Data Request Error')
+                raise ConnectionError
+        else:
+            break
+
     title = data.find('div', attrs={'class': 'live_title'}).string
 
     diffs = ["BASIC", "ADVANCED", "EXTREME", "MASTER"]
@@ -44,21 +70,15 @@ def crawl_songs_for_one_char(session_id, char_index):
     print(f'Request for index {char_index}')
     post_category_request(session_id, char_index)
 
-    error_msg_class = "common_tb_frame_black"
-
     songs = []
     i = 0
     while True:
-        url = 'https://p.eagate.573.jp/game/gfdm/gitadora_highvoltage/p/playdata/music_detail.html?' \
-              f'gtype=gf&cat={char_index}&sid=2&index={i}&page=1'
-
-        print(url)
-        data = get_music_data(session_id, url)
-        if data.find("div", class_=error_msg_class):
+        data = crawl_song_data(session_id, char_index, i)
+        if data:
+            songs.append(data)
+            i += 1
+        else:
             break
-
-        songs.append(crawl_song_data(data))
-        i += 1
 
     return songs
 
@@ -72,7 +92,7 @@ def crawl_songs_for_all_chars(session_id):
 
 
 def songs_to_csv(filename, songs):
-    with open(filename, 'w', newline='') as csvfile:
+    with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
         fieldnames = ['title', 'diff', 'level']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
