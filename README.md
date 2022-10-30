@@ -14,7 +14,7 @@ GITADORA Pattern Crawler for GITADORA Pattern Recommender
 3. 긁어온 정보 서버에 적재 (백엔드 API 호출하는 방식이 될 듯)
 
 ## Todo
-- [ ] session_id 파라미터 반복 제거 필요
+- [x] self 파라미터 반복 제거 필요
 - [ ] 예외 처리
 - [ ] 실행 시간 계산
 
@@ -27,3 +27,4 @@ GITADORA Pattern Crawler for GITADORA Pattern Recommender
 
 ## 테스트 시 특이사항
 - 단위테스트에서 반복되는 코드 제거 방법
+  - setUp(self) 메서드 사용
