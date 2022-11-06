@@ -1,11 +1,11 @@
 import unittest
 
-import main
+import crawler
 
 
 class TestStringMethods(unittest.TestCase):
     def setUp(self):
-        self.crawler = main.Crawler()
+        self.crawler = crawler.Crawler()
 
     def test_not_exist_song(self):
         exist_url = 'https://p.eagate.573.jp/game/gfdm/gitadora_highvoltage/p/playdata/music_detail.html?' \
