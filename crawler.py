@@ -97,6 +97,7 @@ class Crawler:
         with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
             fieldnames = ['title', 'diff', 'level']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
 
             for song in songs:
                 [writer.writerow({'title': song['title'], 'diff': diff, 'level': level}) for (diff, level) in
