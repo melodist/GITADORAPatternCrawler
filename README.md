@@ -6,19 +6,24 @@ GITADORA Pattern Crawler for GITADORA Pattern Recommender
 - [Beautiful Soup 4](https://beautiful-soup-4.readthedocs.io/en/latest/)
 - [requests](https://requests.readthedocs.io/en/latest/)
 - [APScheduler](https://apscheduler.readthedocs.io/en/3.x/#)
+- [csvdiff](https://github.com/larsyencken/csvdiff)
 
 ## Process
 1. 로그인 정보 획득
 2. 사이트 크롤링
-    1. 이름 행별로 접근
-    2. HTML에서 곡명, 배너, 난이도 긁어오기
+   1. 이름 행별로 접근
+   2. HTML에서 곡명, 배너, 난이도 긁어오기
 3. 긁어온 정보 서버에 적재 (백엔드 API 호출하는 방식이 될 듯)
+   1. 기존 정보와 새로운 정보 차이 비교
+   2. 변경된 정보만 갱신
 
 ## Todo
 - [x] self 파라미터 반복 제거 필요
+- [x] 상시 실행
+- [x] csvdiff 도입
 - [ ] 예외 처리
 - [ ] 실행 시간 계산
-- [x] 상시 실행
+
 
 ## 구현 시 특이사항
 - 기타도라 사이트에서 미해금곡 정보를 확인할 수 있는 방법이 없음
@@ -30,3 +35,6 @@ GITADORA Pattern Crawler for GITADORA Pattern Recommender
 ## 테스트 시 특이사항
 - 단위테스트에서 반복되는 코드 제거 방법
   - setUp(self) 메서드 사용
+- LookupError: unknown encoding: x-windows-949
+  - Settings -> Editor -> General -> Console -> Default Encoding 변경
+  - Settings -> Editor -> File Encoding 변경

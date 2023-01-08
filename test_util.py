@@ -1,5 +1,7 @@
+import csv
 import unittest
 
+import csvdiff
 import requests
 from bs4 import BeautifulSoup
 
@@ -51,6 +53,19 @@ class MyTestCase(unittest.TestCase):
     def test_session_id_reader(self):
         with open("test.txt", "r", encoding="utf-8") as f:
             self.assertEqual(f.read(), "test")
+
+
+class CsvDiffTest(unittest.TestCase):
+    def test_csvdiff(self):
+        with open("result.csv", 'r', encoding='UTF-8') as f:
+            with open("result_old.csv", 'r', encoding='UTF-8') as f_old:
+                r = csv.DictReader(f)
+                r_old = csv.DictReader(f_old)
+
+                patch = csvdiff.diff_records(r_old, r, ['title', 'diff']);
+                print(patch['added'])
+                print(patch['removed'])
+                print(patch['changed'])
 
 
 if __name__ == '__main__':
