@@ -6,7 +6,7 @@ from time import sleep
 
 
 class Crawler:
-    def __init__(self, request_delay=0.05):
+    def __init__(self, request_delay=0.2):
         print('GITADORA Pattern Crawler start')
         self.session_id = self.read_session_id()
         self.request_delay = request_delay
